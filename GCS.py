@@ -33,19 +33,19 @@ class GCS(object):
         self.gps_update_constraint = 3
         self.gps_timer = time.time()
     
-    def addPair(self,ardupilot,xplane):
+    def add_pair(self,ardupilot,xplane):
         self.ID_to_ardu[ardupilot.getID()] = ardupilot
         self.ID_to_xplane[xplane.getID()] = xplane
         self.xplane_to_ardu_map[xplane.getID()] = ardupilot
         self.ardu_to_xplane_map[ardupilot.getID()] = xplane
 
-    def getXPlane(self,ardupilot_id):
+    def get_xplane(self,ardupilot_id):
         return self.ardu_to_xplane_map[ardupilot_id]
 
-    def getArdupilot(self,xplane_id):
+    def get_ardupilot(self,xplane_id):
         return self.xplane_to_ardu_map[xplane_id]
 
-    def getCurrentPlanePositions(self,notPlane=None):
+    def get_current_plane_positions(self,notPlane=None):
         '''
         returns a list of all current locations of planes
         (except notPlane's)

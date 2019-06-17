@@ -32,16 +32,16 @@ class XPlane(object):
         self.run = True
 
     def execute(self):
-        xplaneRECV = Thread(target = self.xplaneThread, args=())
+        xplaneRECV = Thread(target = self.xplane_thread, args=())
         xplaneRECV.start()
 
     def die(self):
         self.run = False
 
-    def getID(self):
+    def get_id(self):
         return self.ID
 
-    def processXPlaneUDP(self, data):
+    def process_xplane_udp(self, data):
         vindKIAS,vindKEAS,vtrueKTAS,vtrueKTGS,f0,vindMPH,vtrueMPHAS,vtrueMPHGS = struct.unpack("<ffffffff", data[0:32])
         elev,ailrn,ruddr,f1,nwhel,f2,f3,f4= struct.unpack("<ffffffff", data[36:68])
         pitch,roll,hdingTRUE,hdingMAG,magCOMP,f5,f6,mavarDEG = struct.unpack("<ffffffff", data[72:104])
@@ -49,7 +49,7 @@ class XPlane(object):
 
         return {"roll":roll,"pitch":pitch,"lat":latDEG, "lon":lonDEG,"alt":altFTAGL,"airspeed":vtrueMPHAS,"speed":vtrueMPHGS,"heading":hdingTRUE}
 
-    def writeControlsData(self, data):
+    def write_controls_data(self, data):
         '''
         Sends controls data to xplane instance
         parms {throttle,roll,pitch,rudder}
@@ -64,7 +64,7 @@ class XPlane(object):
         ardupilot_data = pream+throttle_data+control_surface_data
         self.sock.sendto(ardupilot_data,(self.xplane_send_ip,self.xplane_send_port))
 
-    def xplaneThread(self):
+    def xplane_thread(self):
         start = time.time()
 
         # Bind to socket to listen for incoming xplane data
@@ -75,7 +75,7 @@ class XPlane(object):
             xplane_data, addr = self.sock.recvfrom(256)
             if xplane_data[0] == 'D' and xplane_data[1] == 'A':
                 # Get the xplane_data
-                xplane_data = self.processXPlaneUDP(xplane_data[9:170])
+                xplane_data = self.process_xplane_udp(xplane_data[9:170])
                 ardupilot = self.GCS.getArdupilot(self.ID)
                 ardupilot.writeIMUData(xplane_data)
                 

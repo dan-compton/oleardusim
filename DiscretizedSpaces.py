@@ -50,7 +50,7 @@ class DiscretizedUTMGrid(object):
                 else:
                     self.node_map[node] = [utm_node]
 
-    def getNodeUTM(self,node):
+    def get_node_utm(self,node):
         utm_x = 0
         utm_y = 0
         for i in self.node_map[node]:
@@ -60,7 +60,7 @@ class DiscretizedUTMGrid(object):
         utm_y = utm_y/len(self.node_map)
         return (utm_x,utm_y,)
 
-    def interpolateGoalNode(self,goal):
+    def interpolate_goal_node(self,goal):
         '''
         If the goal node lies outside of the grid,
         returns the node closes to the goal by straight line
@@ -78,7 +78,7 @@ class DiscretizedUTMGrid(object):
                 goal_interp = self.coord_map[i]
         return goal_interp
 
-    def drawGraph(self,current_loc,static_object_field,goals,path):
+    def draw_graph(self,current_loc,static_object_field,goals,path):
         pos = {}
         for i in self.G.nodes():
             pos[i] = i
@@ -121,7 +121,7 @@ class DiscretizedUTMGrid(object):
         nx.draw_networkx_edges(self.G,pos,alpha=0.5,width=1)
         plt.show()
 
-    def generateStaticObjectField(self,current_loc, width, height, num):
+    def generate_static_object_field(self,current_loc, width, height, num):
         center_x,center_y = current_loc[0], current_loc[1]
         x = []
         y = []

@@ -11,7 +11,6 @@ from multiprocessing import Process
 
 
 class ArduIeMU(object):
-
     def __init__(self, port,baud):
         self.ser = serial.Serial(port, baud)
         self.pream = 'DIYd'
@@ -28,7 +27,7 @@ class ArduIeMU(object):
                     buff = self.ser.read(2) # skip the checksum and what not
                     x = struct.unpack("bb",buff)
                     if ord(buff[1]) == 0x02:
-                        x = self.readRPY()
+                        x = self.read_rpy()
                         if len(data) > 1000:
                             data = data[500:1000]
                         data.append(list(x))
@@ -37,9 +36,9 @@ class ArduIeMU(object):
 
                     if ord(buff[1]) == 0x03:
                         print buff
-                        print self.readGPS()
+                        print self.read_gps()
 
-    def doCheckSum(self, buff, ck):
+    def do_check_sum(self, buff, ck):
         # Calculate checksums
         IMU_ck_a = 0
         IMU_ck_b = 0
@@ -51,7 +50,7 @@ class ArduIeMU(object):
         self.ser.write(IMU_ck_a)
         self.ser.write(IMU_ck_b)
 
-    def readRPY(self):
+    def read_rpy(self):
         '''
         roll pitch and yaw data are stored in a 6 byte struct
         [low_roll, high_roll, low_pitch, high_pitch, low_yaw, high_yaw]
@@ -72,7 +71,7 @@ class ArduIeMU(object):
 
         return tmp
 
-    def sendRPY(self,roll,pitch,yaw):
+    def send_rpy(self,roll,pitch,yaw):
         '''
         roll pitch and yaw data are stored in a 6 byte struct
         [low_roll, high_roll, low_pitch, high_pitch, low_yaw, high_yaw]
@@ -98,9 +97,9 @@ class ArduIeMU(object):
 
         for i in range(0,ck+2):
             self.ser.write(buff[i])
-        self.doCheckSum(buff, ck)
+        self.do_check_sum(buff, ck)
 
-    def readGPS(self):
+    def read_gps(self):
         '''
         longitude and latitude are stored in a 4 byte struct [low_1, 2, 3, 4]
         '''
@@ -109,7 +108,7 @@ class ArduIeMU(object):
 
         return [longitude,latitude,altitude,gps_speed]
 
-    def sendRPY(self,longitude,latitude,altitude,ground_speed,ground_course,gps_time,imu_health):
+    def send_rpy(self,longitude,latitude,altitude,ground_speed,ground_course,gps_time,imu_health):
         '''
         various GPS shit
         '''
@@ -135,7 +134,7 @@ class ArduIeMU(object):
         for i in range(0,ck+2):
             self.ser.write(buff[i])
 
-        self.doCheckSum(buff, ck)
+        self.do_check_sum(buff, ck)
 
 if __name__ == '__main__':
     imu = ArduIeMU(sys.argv[1],38400)
